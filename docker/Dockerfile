@@ -23,6 +23,7 @@ WORKDIR /app
 COPY training_profile.sh ./
 COPY docker-script.sh ./
 COPY receiver.py ./
+COPY file.mp3 /home/
 
 # start receiver
 CMD ["./docker-script.sh"]

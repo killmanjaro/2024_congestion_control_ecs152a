@@ -10,6 +10,7 @@ import time
 import sys
 from collections import deque
 
+# Constants
 PACKET_SIZE = 1024
 SEQ_ID_SIZE = 4
 MESSAGE_SIZE = PACKET_SIZE - SEQ_ID_SIZE
@@ -21,22 +22,30 @@ FILE_PATH = 'file.mp3'
 WINDOW_SIZE = 100
 
 def create_packet(seq_id, data):
+    """Create a packet with sequence number and data."""
     seq_bytes = int.to_bytes(seq_id, SEQ_ID_SIZE, signed=True, byteorder='big')
     return seq_bytes + data
 
 def parse_ack(ack_packet):
+    """Parse acknowledgment to extract sequence ID."""
     if len(ack_packet) >= SEQ_ID_SIZE:
         ack_id = int.from_bytes(ack_packet[:SEQ_ID_SIZE], signed=True, byteorder='big')
         return ack_id
     return -1
 
 def send_file_fixed_window():
+    """
+    Send file using Fixed Sliding Window protocol.
+    Returns: (throughput, avg_delay, performance_metric)
+    """
     print("Starting transmission...", file=sys.stderr)
     
+    # Create UDP socket
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     sock.settimeout(TIMEOUT)
     print(f"Socket created, connecting to {RECEIVER_IP}:{RECEIVER_PORT}", file=sys.stderr)
     
+    # Read file data
     try:
         with open(FILE_PATH, 'rb') as f:
             file_data = f.read()
@@ -48,9 +57,11 @@ def send_file_fixed_window():
     total_bytes = len(file_data)
     total_packets = (total_bytes + MESSAGE_SIZE - 1) // MESSAGE_SIZE
     print(f"Will send {total_packets} packets with window size {WINDOW_SIZE}", file=sys.stderr)
-
+    
+    # Start timing for throughput
     start_time = time.time()
     
+    # Prepare all packets
     packets = []
     offset = 0
     seq_id = 0
@@ -70,25 +81,28 @@ def send_file_fixed_window():
     
     print(f"Prepared {len(packets)} packets", file=sys.stderr)
     
-    window_start = 0  
-    next_to_send = 0  
+    # Sliding window variables
+    window_start = 0  # Index of first unacknowledged packet
+    next_to_send = 0  # Index of next packet to send
     packet_delays = []
     total_packets_sent = 0
     
+    # Send packets in window
     while window_start < len(packets):
-    
+        # Send new packets within window
         window_end = min(window_start + WINDOW_SIZE, len(packets))
         
         while next_to_send < window_end:
             pkt = packets[next_to_send]
             
-            
+            # Only send if not already acked
             if not pkt['acked']:
                 try:
                     sock.sendto(pkt['packet'], (RECEIVER_IP, RECEIVER_PORT))
                     total_packets_sent += 1
                     pkt['send_count'] += 1
                     
+                    # Record first send time for delay calculation
                     if pkt['first_send_time'] is None:
                         pkt['first_send_time'] = time.time()
                     
@@ -101,6 +115,7 @@ def send_file_fixed_window():
             
             next_to_send += 1
         
+        # Receive ACKs
         ack_received = False
         retry_count = 0
         
@@ -110,6 +125,7 @@ def send_file_fixed_window():
                 ack_id = parse_ack(ack_packet)
                 ack_received = True
                 
+                # Mark all packets with seq_id < ack_id as acknowledged (cumulative ACK)
                 packets_acked = 0
                 for i in range(window_start, len(packets)):
                     pkt = packets[i]
@@ -117,24 +133,29 @@ def send_file_fixed_window():
                         pkt['acked'] = True
                         packets_acked += 1
                         
+                        # Calculate delay for this packet
                         if pkt['first_send_time'] is not None:
                             delay = time.time() - pkt['first_send_time']
                             packet_delays.append(delay)
                 
+                # Slide window forward to first unacked packet
                 while window_start < len(packets) and packets[window_start]['acked']:
                     window_start += 1
                 
+                # Reset next_to_send to start of new window
                 next_to_send = window_start
                 
                 if packets_acked > 0:
-                    break  
+                    break  # Got useful ACK, continue sending
                     
             except socket.timeout:
                 retry_count += 1
                 
+                # Timeout: retransmit unacked packets in window
                 if retry_count % 10 == 0:
                     print(f"Timeout #{retry_count}, retransmitting window from {window_start}", file=sys.stderr)
                 
+                # Retransmit unacked packets in current window
                 for i in range(window_start, min(window_start + WINDOW_SIZE, len(packets))):
                     pkt = packets[i]
                     if not pkt['acked']:
@@ -152,6 +173,7 @@ def send_file_fixed_window():
     
     print(f"All data sent! Total packets transmitted: {total_packets_sent}", file=sys.stderr)
     
+    # Send empty packet to signal end
     final_seq_id = packets[-1]['seq_id'] + len(packets[-1]['data'])
     final_packet = create_packet(final_seq_id, b'')
     sock.sendto(final_packet, (RECEIVER_IP, RECEIVER_PORT))
@@ -165,15 +187,18 @@ def send_file_fixed_window():
     except socket.timeout:
         print("Timeout waiting for final ACK/FIN", file=sys.stderr)
     
+    # Send FINACK
     finack_packet = create_packet(0, b'==FINACK==')
     sock.sendto(finack_packet, (RECEIVER_IP, RECEIVER_PORT))
     print("Sent FINACK - transmission complete!", file=sys.stderr)
     
+    # Calculate metrics
     end_time = time.time()
     total_time = end_time - start_time
     
     sock.close()
     
+    # Calculate results
     throughput = total_bytes / total_time
     avg_delay = sum(packet_delays) / len(packet_delays) if packet_delays else 0
     performance_metric = (0.3 * throughput / 1000) + (0.7 / avg_delay) if avg_delay > 0 else 0
@@ -191,6 +216,7 @@ def main():
     throughput, avg_delay, metric = send_file_fixed_window()
     
     if throughput is not None:
+        # Output in required format (3 lines)
         print(f"{throughput:.7f}")
         print(f"{avg_delay:.7f}")
         print(f"{metric:.7f}")
@@ -201,4 +227,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-

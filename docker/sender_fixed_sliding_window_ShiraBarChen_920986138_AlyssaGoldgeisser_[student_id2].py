@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """
 Fixed Sliding Window Protocol Implementation - Single Run with Debug
 ECS 152A - Computer Networks Project 1
@@ -200,3 +201,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+

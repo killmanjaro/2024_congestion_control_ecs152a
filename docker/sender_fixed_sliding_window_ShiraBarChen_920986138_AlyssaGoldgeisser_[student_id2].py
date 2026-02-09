@@ -16,7 +16,7 @@ def make_packet(seq, data):
     return seq.to_bytes(SEQ_ID_SIZE, "big", signed=True) + data
 
 def parse_ack(pkt):
-    return int.from_bytes(pkt[:SEQ_ID_SIZE], "big", signed=True)
+    return int.from_bytes(pkt[:SEQ_ID_SIZE], "big", signed=True), pkt[SEQ_ID_SIZE:]
 
 with open(FILE_PATH, "rb") as f:
     file_bytes = f.read()
@@ -24,7 +24,7 @@ with open(FILE_PATH, "rb") as f:
 chunks = []
 seq = 0
 for i in range(0, len(file_bytes), DATA_SIZE):
-    data = file_bytes[i:i+DATA_SIZE]
+    data = file_bytes[i:i + DATA_SIZE]
     chunks.append((seq, data))
     seq += len(data)
 
@@ -45,7 +45,6 @@ for _ in range(RUNS):
     start_time = time.time()
 
     while base < FINAL_SEQ:
-        # Fill window
         while len(window) < WINDOW_SIZE and next_idx < len(chunks):
             seq_id, data = chunks[next_idx]
             pkt = make_packet(seq_id, data)
@@ -58,19 +57,20 @@ for _ in range(RUNS):
             next_idx += 1
 
         try:
-            ack_pkt, _ = sock.recvfrom(PACKET_SIZE)
-            ack_id = parse_ack(ack_pkt)
+            pkt, _ = sock.recvfrom(PACKET_SIZE)
+            ack_id, msg = parse_ack(pkt)
 
-            to_remove = []
-            for s in window:
-                if s < ack_id:
-                    delays.append(time.time() - send_times[s])
-                    to_remove.append(s)
+            if msg == b'ack':
+                to_remove = []
+                for s in window:
+                    if s < ack_id:
+                        delays.append(time.time() - send_times[s])
+                        to_remove.append(s)
 
-            for s in to_remove:
-                del window[s]
+                for s in to_remove:
+                    del window[s]
 
-            base = ack_id
+                base = ack_id
 
         except socket.timeout:
             for pkt in window.values():
@@ -79,24 +79,23 @@ for _ in range(RUNS):
     sock.sendto(make_packet(FINAL_SEQ, b''), RECEIVER_ADDR)
 
     while True:
-        pkt, _ = sock.recvfrom(PACKET_SIZE)
-        ack_id = parse_ack(pkt)
-        msg = pkt[SEQ_ID_SIZE:]
+        try:
+            pkt, _ = sock.recvfrom(PACKET_SIZE)
+            ack_id, msg = parse_ack(pkt)
 
-        print("Received message:", msg)
-        print("ACK ID:", ack_id)
+            if msg == b'fin':
+                finack = make_packet(ack_id, b'==FINACK==')
+                sock.sendto(finack, RECEIVER_ADDR)
+                break
 
-        if msg == b'fin':
-            print("FIN received, sending FINACK")
-            print("Sending FINACK")
-            sock.sendto(make_packet(ack_id, b'==FINACK=='), RECEIVER_ADDR)
-            break
+        except socket.timeout:
+            continue
+
 
     end_time = time.time()
     sock.close()
 
-    throughput = FINAL_SEQ / (end_time - start_time)
-    throughputs.append(throughput)
+    throughputs.append(FINAL_SEQ / (end_time - start_time))
 
 avg_throughput = sum(throughputs) / RUNS
 avg_delay = sum(delays) / len(delays)

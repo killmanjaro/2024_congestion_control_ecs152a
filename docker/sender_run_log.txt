@@ -1,0 +1,214 @@
+Run1: 
+    Time taken: 1395.76 seconds
+    Throughput: 3811.34 bytes/sec (3.72 KB/sec)
+    Average delay: 0.267523 seconds
+    Performance metric: 3.760000
+    3811.3366203
+    0.2675228
+    3.7600000
+
+Full log:
+Starting transmission...
+Socket created, connecting to 127.0.0.1:5001
+File read successfully: 5319693 bytes (5.07 MB)
+Will send 5216 packets
+Progress: 8.8% (500/5216 packets)
+Wrong ACK: expected 502860, got 501840
+Progress: 17.5% (1000/5216 packets)
+Wrong ACK: expected 1324980, got 1323960
+Progress: 26.1% (1500/5216 packets)
+Wrong ACK: expected 1461660, got 1460640
+Wrong ACK: expected 1462680, got 1461660
+Wrong ACK: expected 1463700, got 1462680
+Wrong ACK: expected 1464720, got 1463700
+Wrong ACK: expected 1465740, got 1464720
+Wrong ACK: expected 1466760, got 1465740
+Wrong ACK: expected 1467780, got 1466760
+Wrong ACK: expected 1468800, got 1467780
+Wrong ACK: expected 1469820, got 1468800
+Wrong ACK: expected 1470840, got 1469820
+Wrong ACK: expected 1471860, got 1470840
+Wrong ACK: expected 1472880, got 1471860
+Wrong ACK: expected 1473900, got 1472880
+Wrong ACK: expected 1474920, got 1473900
+Wrong ACK: expected 1475940, got 1474920
+Wrong ACK: expected 1476960, got 1475940
+Wrong ACK: expected 1706460, got 1705440
+Wrong ACK: expected 1707480, got 1706460
+Wrong ACK: expected 1708500, got 1707480
+Wrong ACK: expected 1709520, got 1708500
+Wrong ACK: expected 1710540, got 1709520
+Wrong ACK: expected 1711560, got 1710540
+Wrong ACK: expected 1712580, got 1711560
+Wrong ACK: expected 1713600, got 1712580
+Wrong ACK: expected 1714620, got 1713600
+Wrong ACK: expected 1715640, got 1714620
+Wrong ACK: expected 1716660, got 1715640
+Wrong ACK: expected 1717680, got 1716660
+Wrong ACK: expected 1718700, got 1717680
+Wrong ACK: expected 1719720, got 1718700
+Wrong ACK: expected 1720740, got 1719720
+Wrong ACK: expected 1721760, got 1720740
+Wrong ACK: expected 1722780, got 1721760
+Wrong ACK: expected 1723800, got 1722780
+Wrong ACK: expected 1724820, got 1723800
+Wrong ACK: expected 1725840, got 1724820
+Wrong ACK: expected 1726860, got 1725840
+Wrong ACK: expected 1805400, got 1804380
+Wrong ACK: expected 1806420, got 1805400
+Progress: 34.3% (2000/5216 packets)
+Wrong ACK: expected 1872720, got 1871700
+Progress: 42.9% (2500/5216 packets)
+Progress: 51.7% (3000/5216 packets)
+Wrong ACK: expected 2896800, got 2895780
+Wrong ACK: expected 2897820, got 2896800
+Wrong ACK: expected 2898840, got 2897820
+Wrong ACK: expected 2899860, got 2898840
+Wrong ACK: expected 2900880, got 2899860
+Wrong ACK: expected 2901900, got 2900880
+Wrong ACK: expected 2902920, got 2901900
+Wrong ACK: expected 2903940, got 2902920
+Wrong ACK: expected 2904960, got 2903940
+Wrong ACK: expected 2905980, got 2904960
+Wrong ACK: expected 2907000, got 2905980
+Wrong ACK: expected 2908020, got 2907000
+Wrong ACK: expected 2909040, got 2908020
+Wrong ACK: expected 2910060, got 2909040
+Wrong ACK: expected 2911080, got 2910060
+Wrong ACK: expected 2912100, got 2911080
+Wrong ACK: expected 2913120, got 2912100
+Wrong ACK: expected 2914140, got 2913120
+Wrong ACK: expected 2915160, got 2914140
+Wrong ACK: expected 2916180, got 2915160
+Wrong ACK: expected 2917200, got 2916180
+Wrong ACK: expected 2918220, got 2917200
+Wrong ACK: expected 2919240, got 2918220
+Progress: 60.0% (3500/5216 packets)
+Wrong ACK: expected 3285420, got 3284400
+Progress: 68.5% (4000/5216 packets)
+Wrong ACK: expected 3968820, got 3967800
+Wrong ACK: expected 3969840, got 3968820
+Wrong ACK: expected 3970860, got 3969840
+Wrong ACK: expected 3971880, got 3970860
+Wrong ACK: expected 3972900, got 3971880
+Wrong ACK: expected 3973920, got 3972900
+Wrong ACK: expected 3974940, got 3973920
+Wrong ACK: expected 3975960, got 3974940
+Wrong ACK: expected 3976980, got 3975960
+Wrong ACK: expected 3978000, got 3976980
+Wrong ACK: expected 3979020, got 3978000
+Wrong ACK: expected 4089180, got 4088160
+Wrong ACK: expected 4090200, got 4089180
+Wrong ACK: expected 4091220, got 4090200
+Wrong ACK: expected 4092240, got 4091220
+Progress: 77.1% (4500/5216 packets)
+Progress: 85.9% (5000/5216 packets)
+Progress: 94.8% (5500/5216 packets)
+All data sent! Total packets transmitted: 5792
+Sent final packet
+Received ACK for final packet
+Received FIN packet
+Sent FINACK - transmission complete!
+
+=== RESULTS ===
+Time taken: 1395.76 seconds
+Throughput: 3811.34 bytes/sec (3.72 KB/sec)
+Average delay: 0.267523 seconds
+Performance metric: 3.760000
+3811.3366203
+0.2675228
+3.7600000
+
+
+Run2: 
+Starting transmission...
+Socket created, connecting to 127.0.0.1:5001
+File read successfully: 5319693 bytes (5.07 MB)
+Will send 5216 packets
+Progress: 8.8% (500/5216 packets)
+Progress: 17.7% (1000/5216 packets)
+Progress: 26.2% (1500/5216 packets)
+Progress: 35.2% (2000/5216 packets)
+Progress: 44.0% (2500/5216 packets)
+Progress: 52.9% (3000/5216 packets)
+Progress: 61.7% (3500/5216 packets)
+Progress: 70.6% (4000/5216 packets)
+Progress: 79.3% (4500/5216 packets)
+Progress: 88.1% (5000/5216 packets)
+Progress: 96.8% (5500/5216 packets)
+All data sent! Total packets transmitted: 5680
+Sent final packet
+Received ACK for final packet
+Received FIN packet
+Sent FINACK - transmission complete!
+
+=== RESULTS ===
+Time taken: 1102.26 seconds
+Throughput: 4826.16 bytes/sec (4.71 KB/sec)
+Average delay: 0.211288 seconds
+Performance metric: 4.760866
+4826.1557348
+0.2112876
+4.7608665
+
+Run3:
+Starting transmission...
+Socket created, connecting to 127.0.0.1:5001
+File read successfully: 5319693 bytes (5.07 MB)
+Will send 5216 packets
+Progress: 8.8% (500/5216 packets)
+Progress: 17.4% (1000/5216 packets)
+Progress: 26.4% (1500/5216 packets)
+Progress: 35.2% (2000/5216 packets)
+Progress: 43.9% (2500/5216 packets)
+Progress: 52.7% (3000/5216 packets)
+Progress: 61.4% (3500/5216 packets)
+Progress: 70.1% (4000/5216 packets)
+Progress: 78.9% (4500/5216 packets)
+Progress: 87.8% (5000/5216 packets)
+Progress: 96.6% (5500/5216 packets)
+All data sent! Total packets transmitted: 5700
+Sent final packet
+Received ACK for final packet
+Received FIN packet
+Sent FINACK - transmission complete!
+
+=== RESULTS ===
+Time taken: 1086.59 seconds
+Throughput: 4895.76 bytes/sec (4.78 KB/sec)
+Average delay: 0.208266 seconds
+Performance metric: 4.829814
+4895.7586724
+0.2082660
+4.8298137
+
+Run4:
+Starting transmission...
+Socket created, connecting to 127.0.0.1:5001
+File read successfully: 5319693 bytes (5.07 MB)
+Will send 5216 packets
+Progress: 8.7% (500/5216 packets)
+Progress: 17.4% (1000/5216 packets)
+Progress: 26.3% (1500/5216 packets)
+Progress: 35.2% (2000/5216 packets)
+Progress: 43.8% (2500/5216 packets)
+Progress: 52.6% (3000/5216 packets)
+Progress: 61.5% (3500/5216 packets)
+Progress: 70.2% (4000/5216 packets)
+Progress: 79.1% (4500/5216 packets)
+Progress: 87.9% (5000/5216 packets)
+Progress: 96.8% (5500/5216 packets)
+All data sent! Total packets transmitted: 5679
+Sent final packet
+Received ACK for final packet
+Received FIN packet
+Sent FINACK - transmission complete!
+
+=== RESULTS ===
+Time taken: 1055.99 seconds
+Throughput: 5037.65 bytes/sec (4.92 KB/sec)
+Average delay: 0.202401 seconds
+Performance metric: 4.969783
+5037.6532410
+0.2024006
+4.9697833

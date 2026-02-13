@@ -94,12 +94,10 @@ def send_file_fixed_window():
                     if pkt['first_send_time'] is None:
                         pkt['first_send_time'] = time.time()
                     
-                    if total_packets_sent % 500 == 0:
-                        progress = (window_start / len(packets)) * 100
-                        print(f"Progress: {progress:.1f}% (window: {window_start}-{window_end}, sent: {total_packets_sent})", file=sys.stderr)
+
                         
                 except Exception as e:
-                    print(f"ERROR sending packet {next_to_send}: {e}", file=sys.stderr)
+                    pass
             
             next_to_send += 1
         
@@ -141,6 +139,7 @@ def send_file_fixed_window():
                 
                 # Timeout
                 if retry_count % 10 == 0:
+                    pass
                 
                 # Retransmit unacked packets
                 for i in range(window_start, min(window_start + WINDOW_SIZE, len(packets))):
@@ -151,6 +150,7 @@ def send_file_fixed_window():
                             total_packets_sent += 1
                             pkt['send_count'] += 1
                         except Exception as e:
+                            pass
         
         if retry_count >= MAX_RETRIES:
             sock.close()
@@ -166,11 +166,11 @@ def send_file_fixed_window():
         ack_packet, _ = sock.recvfrom(PACKET_SIZE)
         fin_packet, _ = sock.recvfrom(PACKET_SIZE)
     except socket.timeout:
+        pass
     
     # Send FINACK
     finack_packet = create_packet(0, b'==FINACK==')
     sock.sendto(finack_packet, (RECEIVER_IP, RECEIVER_PORT))
-    print("Sent FINACK - transmission complete!", file=sys.stderr)
     
     # Calc metrics
     end_time = time.time()

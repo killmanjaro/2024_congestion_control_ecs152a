@@ -1,0 +1,11 @@
+Run1:
+Time taken: 354.22 seconds
+Throughput: 15018.15 bytes/sec (14.67 KB/sec)
+Average delay: 6.701943 seconds
+Performance metric: 4.609891
+15018.1460955
+6.7019426
+4.6098912
+
+
+Run2:

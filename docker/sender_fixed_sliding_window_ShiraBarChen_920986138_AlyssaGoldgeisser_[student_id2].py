@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
-Fixed Sliding Window Protocol Implementation - Single Run with Debug
+Fixed Sliding Window Protocol
 ECS 152A - Computer Networks Project 1
-Window Size: 100 packets
+Shira Bar-Chen
 """
 
 import socket
@@ -202,3 +202,4 @@ def main():
 if __name__ == "__main__":
 
     main()
+

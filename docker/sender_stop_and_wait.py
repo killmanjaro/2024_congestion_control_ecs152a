@@ -1,9 +1,4 @@
 #!/usr/bin/env python3
-"""
-Stop-and-Wait Protocol Implementation - Single Run with Debug
-ECS 152A - Computer Networks Project 1
-"""
-
 import socket
 import time
 

@@ -9,3 +9,79 @@ Performance metric: 4.609891
 
 
 Run2:
+Time taken: 390.18 seconds
+Throughput: 13633.97 bytes/sec (13.31 KB/sec)
+Average delay: 7.470603 seconds
+Performance metric: 4.183890
+13633.9659549
+7.4706031
+4.1838904
+
+Run3:
+Time taken: 357.57 seconds
+Throughput: 14877.37 bytes/sec (14.53 KB/sec)
+Average delay: 6.791260 seconds
+Performance metric: 4.566284
+14877.3687110
+6.7912596
+4.5662843
+
+Run4:
+Time taken: 355.26 seconds
+Throughput: 14974.15 bytes/sec (14.62 KB/sec)
+Average delay: 6.733199 seconds
+Performance metric: 4.596207
+14974.1471108
+6.7331994
+4.5962066
+
+Run5:
+Time taken: 363.84 seconds
+Throughput: 14621.05 bytes/sec (14.28 KB/sec)
+Average delay: 6.951268 seconds
+Performance metric: 4.487016
+14621.0493057
+6.9512681
+4.4870158
+
+Run6:
+=== RESULTS ===
+Time taken: 375.69 seconds
+Throughput: 14159.85 bytes/sec (13.83 KB/sec)
+Average delay: 7.158734 seconds
+Performance metric: 4.345737
+14159.8494658
+7.1587342
+4.3457375
+
+Run7:
+Time taken: 377.09 seconds
+Throughput: 14107.24 bytes/sec (13.78 KB/sec)
+Average delay: 7.079957 seconds
+Performance metric: 4.331042
+14107.2378891
+7.0799570
+4.3310420
+
+Run8:
+Time taken: 382.40 seconds
+Throughput: 13911.51 bytes/sec (13.59 KB/sec)
+Average delay: 7.190020 seconds
+Performance metric: 4.270810
+13911.5107793
+7.1900201
+4.2708104
+
+Run9:
+Throughput: 12725.14 bytes/sec (12.43 KB/sec)
+Average delay: 7.940432 seconds
+Performance metric: 3.905697
+12725.1355302
+7.9404320
+3.9056971
+
+
+Run10:
+16749.5217375
+6.0822108
+5.1399463

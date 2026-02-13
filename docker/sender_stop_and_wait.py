@@ -127,7 +127,6 @@ def main():
     throughput, avg_delay, metric = send_file_stop_and_wait()
     
     if throughput is not None:
-        # Output in required format (3 lines)
         print(f"{throughput:.7f}")
         print(f"{avg_delay:.7f}")
         print(f"{metric:.7f}")

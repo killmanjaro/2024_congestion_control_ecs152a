@@ -2,7 +2,6 @@
 """
 Fixed Sliding Window Protocol
 ECS 152A - Computer Networks Project 1
-Shira Bar-Chen
 """
 
 import socket
@@ -202,4 +201,5 @@ def main():
 if __name__ == "__main__":
 
     main()
+
 

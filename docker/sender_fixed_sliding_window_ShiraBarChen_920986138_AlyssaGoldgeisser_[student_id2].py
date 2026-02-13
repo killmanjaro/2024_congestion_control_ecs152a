@@ -22,41 +22,32 @@ FILE_PATH = 'file.mp3'
 WINDOW_SIZE = 100
 
 def create_packet(seq_id, data):
-    """Create a packet with sequence number and data."""
+    # Create a packet
     seq_bytes = int.to_bytes(seq_id, SEQ_ID_SIZE, signed=True, byteorder='big')
     return seq_bytes + data
 
 def parse_ack(ack_packet):
-    """Parse acknowledgment to extract sequence ID."""
+    #Parse ack
     if len(ack_packet) >= SEQ_ID_SIZE:
         ack_id = int.from_bytes(ack_packet[:SEQ_ID_SIZE], signed=True, byteorder='big')
         return ack_id
     return -1
 
 def send_file_fixed_window():
-    """
-    Send file using Fixed Sliding Window protocol.
-    Returns: (throughput, avg_delay, performance_metric)
-    """
-    print("Starting transmission...", file=sys.stderr)
     
     # Create UDP socket
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     sock.settimeout(TIMEOUT)
-    print(f"Socket created, connecting to {RECEIVER_IP}:{RECEIVER_PORT}", file=sys.stderr)
     
     # Read file data
     try:
         with open(FILE_PATH, 'rb') as f:
             file_data = f.read()
-        print(f"File read successfully: {len(file_data)} bytes ({len(file_data)/1024/1024:.2f} MB)", file=sys.stderr)
     except Exception as e:
-        print(f"ERROR reading file: {e}", file=sys.stderr)
         return None, None, None
     
     total_bytes = len(file_data)
     total_packets = (total_bytes + MESSAGE_SIZE - 1) // MESSAGE_SIZE
-    print(f"Will send {total_packets} packets with window size {WINDOW_SIZE}", file=sys.stderr)
     
     # Start timing for throughput
     start_time = time.time()
@@ -79,15 +70,13 @@ def send_file_fixed_window():
         seq_id += len(chunk)
         offset += len(chunk)
     
-    print(f"Prepared {len(packets)} packets", file=sys.stderr)
-    
     # Sliding window variables
-    window_start = 0  # Index of first unacknowledged packet
-    next_to_send = 0  # Index of next packet to send
+    window_start = 0  # first unacked packet
+    next_to_send = 0  # next packet to send
     packet_delays = []
     total_packets_sent = 0
     
-    # Send packets in window
+    # Send packets
     while window_start < len(packets):
         # Send new packets within window
         window_end = min(window_start + WINDOW_SIZE, len(packets))
@@ -102,7 +91,7 @@ def send_file_fixed_window():
                     total_packets_sent += 1
                     pkt['send_count'] += 1
                     
-                    # Record first send time for delay calculation
+                    # Record first send time
                     if pkt['first_send_time'] is None:
                         pkt['first_send_time'] = time.time()
                     
@@ -125,7 +114,7 @@ def send_file_fixed_window():
                 ack_id = parse_ack(ack_packet)
                 ack_received = True
                 
-                # Mark all packets with seq_id < ack_id as acknowledged (cumulative ACK)
+                # Mark all packets with seq_id < ack_id as acked
                 packets_acked = 0
                 for i in range(window_start, len(packets)):
                     pkt = packets[i]
@@ -133,7 +122,7 @@ def send_file_fixed_window():
                         pkt['acked'] = True
                         packets_acked += 1
                         
-                        # Calculate delay for this packet
+                        # Calc delay for this packet
                         if pkt['first_send_time'] is not None:
                             delay = time.time() - pkt['first_send_time']
                             packet_delays.append(delay)
@@ -142,7 +131,7 @@ def send_file_fixed_window():
                 while window_start < len(packets) and packets[window_start]['acked']:
                     window_start += 1
                 
-                # Reset next_to_send to start of new window
+                # Reset next_to_send
                 next_to_send = window_start
                 
                 if packets_acked > 0:
@@ -151,11 +140,10 @@ def send_file_fixed_window():
             except socket.timeout:
                 retry_count += 1
                 
-                # Timeout: retransmit unacked packets in window
+                # Timeout
                 if retry_count % 10 == 0:
-                    print(f"Timeout #{retry_count}, retransmitting window from {window_start}", file=sys.stderr)
                 
-                # Retransmit unacked packets in current window
+                # Retransmit unacked packets
                 for i in range(window_start, min(window_start + WINDOW_SIZE, len(packets))):
                     pkt = packets[i]
                     if not pkt['acked']:
@@ -164,55 +152,41 @@ def send_file_fixed_window():
                             total_packets_sent += 1
                             pkt['send_count'] += 1
                         except Exception as e:
-                            print(f"ERROR retransmitting packet {i}: {e}", file=sys.stderr)
         
         if retry_count >= MAX_RETRIES:
-            print(f"FAILED: No ACK after {MAX_RETRIES} retries", file=sys.stderr)
             sock.close()
             return None, None, None
-    
-    print(f"All data sent! Total packets transmitted: {total_packets_sent}", file=sys.stderr)
+
     
     # Send empty packet to signal end
     final_seq_id = packets[-1]['seq_id'] + len(packets[-1]['data'])
     final_packet = create_packet(final_seq_id, b'')
     sock.sendto(final_packet, (RECEIVER_IP, RECEIVER_PORT))
-    print("Sent final packet", file=sys.stderr)
     
     try:
         ack_packet, _ = sock.recvfrom(PACKET_SIZE)
-        print("Received ACK for final packet", file=sys.stderr)
         fin_packet, _ = sock.recvfrom(PACKET_SIZE)
-        print("Received FIN packet", file=sys.stderr)
     except socket.timeout:
-        print("Timeout waiting for final ACK/FIN", file=sys.stderr)
     
     # Send FINACK
     finack_packet = create_packet(0, b'==FINACK==')
     sock.sendto(finack_packet, (RECEIVER_IP, RECEIVER_PORT))
     print("Sent FINACK - transmission complete!", file=sys.stderr)
     
-    # Calculate metrics
+    # Calc metrics
     end_time = time.time()
     total_time = end_time - start_time
     
     sock.close()
     
-    # Calculate results
+    # Calc results
     throughput = total_bytes / total_time
     avg_delay = sum(packet_delays) / len(packet_delays) if packet_delays else 0
     performance_metric = (0.3 * throughput / 1000) + (0.7 / avg_delay) if avg_delay > 0 else 0
     
-    print(f"\n=== RESULTS ===", file=sys.stderr)
-    print(f"Time taken: {total_time:.2f} seconds", file=sys.stderr)
-    print(f"Throughput: {throughput:.2f} bytes/sec ({throughput/1024:.2f} KB/sec)", file=sys.stderr)
-    print(f"Average delay: {avg_delay:.6f} seconds", file=sys.stderr)
-    print(f"Performance metric: {performance_metric:.6f}", file=sys.stderr)
-    
     return throughput, avg_delay, performance_metric
 
 def main():
-    """Run once and output metrics."""
     throughput, avg_delay, metric = send_file_fixed_window()
     
     if throughput is not None:
@@ -226,4 +200,5 @@ def main():
         print("0.0000000")
 
 if __name__ == "__main__":
+
     main()
